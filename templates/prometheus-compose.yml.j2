@@ -1,0 +1,48 @@
+---
+version: '2'
+
+services:
+    prometheus:
+        image: {{docker_prometheus_tag}}
+        volumes:
+            - /etc/is/prometheus:/etc/prometheus
+            - /etc/is/alertmanager:/etc/alertmanager
+            - prometeus_data:/prometheus
+        ports:
+            - "9090:9090"
+        networks:
+            - is-prometheus
+        command:
+            - '--config.file=/etc/prometheus/prometheus.yml'
+            - '--storage.tsdb.retention=32d'
+            - '--storage.tsdb.retention.size=15GB'
+    
+    alertmanager:
+        image: prom/alertmanager
+        volumes:
+            - /etc/is/alertmanager:/etc/alertmanager
+        ports:
+            - "9093:9093"
+        networks:
+            - is-prometheus
+
+    prometheus-blackbox-exporter:
+        image: prom/blackbox-exporter
+        ports:
+            - 9115:9115
+        volumes:
+            - /etc/blackbox_exporter:/config
+        entrypoint: "/bin/blackbox_exporter --config.file=/config/blackbox.yml"
+        networks:
+            - is-prometheus
+      
+    prom-pushgateway:
+        image: prom/pushgateway
+        ports:
+            - {{prometheus_push_proxy_port}}:9091
+
+volumes:
+    prometeus_data:
+
+networks:
+    is-prometheus:

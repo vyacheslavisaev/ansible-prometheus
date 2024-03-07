@@ -1,0 +1,20 @@
+---
+# tasks file for is-monitor-prometheus
+- name: Copying Prometheus configuration
+  template:
+    src: "prometheus.yml"
+    dest: "{{prometheus_conf}}/"
+
+- name: Copying Alert Manager configuration
+  template:
+    src: "alert.rules"
+    dest: "{{alert_mngr_conf}}/"
+
+- name: Copying BlackBox configuration
+  copy:
+    src: "blackbox.yml"
+    dest: "{{blackbox_conf}}/"
+
+- name: Deploy Prometheus service
+  include_role:
+    name: "vyacheslavisaev.deploy_docker_compose_service"

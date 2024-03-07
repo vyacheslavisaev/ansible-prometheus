@@ -1,0 +1,10 @@
+---
+# vars file for is-monitor-prometheus
+prometheus_conf: "/etc/is/prometheus"
+alert_mngr_conf: "/etc/is/alertmanager"
+blackbox_conf: "/etc/blackbox_exporter"
+
+service_name:  "prometheus"
+docker_compose_src: "prometheus-compose.yml.j2"
+service_ports:
+  9090: 9090
